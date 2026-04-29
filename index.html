@@ -96,7 +96,22 @@ button{
         <p>No Akaun: <b>1234567890</b></p>
         <p>Nama: <b>ADMIN STORE</b></p>
         <p>Jumlah: RM <span id="nominal"></span></p>
-        <p style="color:#00e676;">*Selepas pindahan, sila hubungi admin</p>
+
+        <!-- UPLOAD BUKTI -->
+        <div style="margin-top:10px;">
+            <p><b>Muat Naik Bukti Transfer</b></p>
+            <input type="file" id="bukti" accept="image/*">
+            <p id="namaFile" style="font-size:12px;color:#aaa;"></p>
+        </div>
+
+        <!-- WHATSAPP -->
+        <a id="waLink" target="_blank">
+            <button style="background:#25D366;margin-top:10px;">
+                Hantar ke WhatsApp Admin
+            </button>
+        </a>
+
+        <p style="color:#00e676;">*Selepas pindahan, sila hantar bukti ke admin</p>
     </div>
 
     <button class="logout" onclick="logout()">Log Keluar</button>
@@ -107,8 +122,12 @@ button{
 <script>
 
 let currentUser = null;
+let fileName = "";
 
-// DATA PENGGUNA
+// NOMOR ADMIN
+const noAdmin = "6285183034790";
+
+// DATA USER
 const users = [
     {id:"123", password:"123", nama:"Farid Fauzan", saldo:5000},
     {id:"456", password:"456", nama:"Budi", saldo:1500}
@@ -122,7 +141,7 @@ window.onload = function(){
     }
 };
 
-// LOG MASUK
+// LOGIN
 function login(){
     let id = document.getElementById("id").value;
     let pass = document.getElementById("pass").value;
@@ -138,7 +157,7 @@ function login(){
     }
 }
 
-// PAPAR DASHBOARD
+// DASHBOARD
 function showDashboard(user){
     currentUser = user;
 
@@ -155,12 +174,12 @@ function formatRM(angka){
     return angka.toLocaleString("ms-MY");
 }
 
-// KEMASKINI BAKI
+// UPDATE SALDO
 function updateSaldo(){
     document.getElementById("showSaldo").innerText = formatRM(currentUser.saldo);
 }
 
-// PAPAR AKAUN ADMIN
+// TAMPIL ADMIN
 function showAdmin(){
     let jumlah = parseInt(document.getElementById("jumlah").value);
 
@@ -171,14 +190,39 @@ function showAdmin(){
 
     document.getElementById("adminBox").style.display = "block";
     document.getElementById("nominal").innerText = formatRM(jumlah);
+
+    updateWhatsAppLink(jumlah);
 }
 
-// PENGELUARAN
+// UPLOAD FILE
+document.addEventListener("change", function(e){
+    if(e.target && e.target.id === "bukti"){
+        let file = e.target.files[0];
+        if(file){
+            fileName = file.name;
+            document.getElementById("namaFile").innerText = "Fail: " + fileName;
+        }
+    }
+});
+
+// LINK WHATSAPP
+function updateWhatsAppLink(jumlah){
+    let pesan = `Halo admin,
+Saya ingin top up RM ${formatRM(jumlah)}.
+ID: ${currentUser.id}
+Nama: ${currentUser.nama}
+Bukti: ${fileName || "akan dihantar di chat"}`;
+
+    let link = `https://wa.me/${noAdmin}?text=${encodeURIComponent(pesan)}`;
+    document.getElementById("waLink").href = link;
+}
+
+// WITHDRAW
 function withdraw(){
     alert("Sila selesaikan caj pentadbiran sebanyak 700 RM terlebih dahulu!");
 }
 
-// LOG KELUAR
+// LOGOUT
 function logout(){
     localStorage.removeItem("loginUser");
     location.reload();
