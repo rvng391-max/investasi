@@ -3,231 +3,211 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Akaun Premium</title>
+<title>Super Wallet Trading</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
-body{background:linear-gradient(180deg,#020617,#0f172a);color:white;}
+body{background:#020617;color:white;}
+
+/* NAV */
+.nav{
+    display:flex;
+    background:#0f172a;
+}
+.nav button{
+    flex:1;
+    padding:15px;
+    border:none;
+    background:none;
+    color:white;
+    font-weight:bold;
+}
+.active{background:#1e293b;}
 
 /* HEADER */
-.header{padding:20px;display:flex;justify-content:space-between;align-items:center;}
-.logo{font-weight:bold;color:#facc15;}
-.profile{width:35px;height:35px;border-radius:50%;background:#1e293b;}
+.header{padding:20px;font-size:18px;font-weight:bold;color:#facc15;}
 
-/* CARD SALDO */
-.balance-card{margin:15px;padding:20px;border-radius:20px;background:linear-gradient(135deg,#1e3a8a,#9333ea);}
+/* CARD */
+.card{
+    margin:15px;
+    padding:20px;
+    border-radius:20px;
+    background:linear-gradient(135deg,#1e3a8a,#9333ea);
+}
+
 .balance{font-size:28px;margin-top:10px;font-weight:bold;}
-.user{font-size:13px;opacity:0.8;margin-top:5px;}
 
 /* INPUT */
 .input{padding:15px;}
 .input input{
-    width:100%;padding:15px;border:none;border-radius:15px;background:#1e293b;color:white;margin-top:10px;
+    width:100%;padding:15px;border:none;border-radius:15px;background:#1e293b;color:white;
 }
 
-/* MENU */
-.menu{display:flex;gap:10px;padding:15px;}
-.menu button{
-    flex:1;padding:15px;border:none;border-radius:15px;color:white;font-weight:bold;
+/* BUTTON */
+.btn{
+    margin:10px 15px;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    font-weight:bold;
+    width:calc(100% - 30px);
 }
-.topup{background:#22c55e;}
-.withdraw{background:#ef4444;}
+.green{background:#22c55e;}
+.red{background:#ef4444;}
+.wa{background:#25D366;}
 
-/* CARD */
-.card{
-    margin:15px;padding:20px;border-radius:20px;
-    background:#0f172a;border:1px solid rgba(255,255,255,0.1);
-}
+/* SECTION */
+.section{display:none;}
+.show{display:block;}
 
-/* ROW */
-.row{display:flex;justify-content:space-between;margin:8px 0;}
-
-/* WA BUTTON */
-.wa button{
-    width:100%;padding:14px;border:none;border-radius:12px;
-    background:#25D366;font-weight:bold;margin-top:10px;
+/* TRADING */
+.price{font-size:30px;text-align:center;margin-top:20px;}
+.chart{
+    height:100px;
+    margin:15px;
+    background:linear-gradient(90deg,#22c55e,#16a34a);
+    border-radius:10px;
 }
-
-/* LOGIN */
-#login{padding:20px;}
-.login-box{
-    margin-top:120px;background:#0f172a;padding:20px;border-radius:20px;
-}
-.login-box input{
-    width:100%;padding:15px;margin:10px 0;border:none;border-radius:10px;
-    background:#1e293b;color:white;
-}
-.login-box button{
-    width:100%;padding:15px;border:none;border-radius:10px;
-    background:#22c55e;font-weight:bold;
-}
-
-#dashboard{display:none;}
 </style>
-
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login">
-    <div class="login-box">
-        <h2>Log Masuk</h2>
-        <input type="text" id="id" placeholder="ID">
-        <input type="password" id="pass" placeholder="Kata Laluan">
-        <button onclick="login()">Masuk</button>
-    </div>
+<div class="header">SUPER APP</div>
+
+<div class="nav">
+    <button class="active" onclick="showTab('wallet')">Wallet</button>
+    <button onclick="showTab('trading')">Trading</button>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard">
+<!-- WALLET -->
+<div id="wallet" class="section show">
 
-<div class="header">
-    <div class="logo">AKAUN VIP</div>
-    <div class="profile"></div>
-</div>
-
-<div class="balance-card">
-    <div>Baki Semasa</div>
-    <div class="balance" id="saldo">RM 0</div>
-    <div class="user" id="user"></div>
+<div class="card">
+    <div>Baki</div>
+    <div class="balance">RM <span id="saldo">5000</span></div>
 </div>
 
 <div class="input">
     <input type="number" id="jumlah" placeholder="Masukkan jumlah">
 </div>
 
-<div class="menu">
-    <button class="topup" onclick="showAdmin()">Tambah Baki</button>
-    <button class="withdraw" onclick="showWithdraw()">Pengeluaran</button>
+<button class="btn green" onclick="topup()">Tambah Baki</button>
+<button class="btn red" onclick="showWithdraw()">Pengeluaran</button>
+
+<div id="adminBox" style="display:none;padding:15px;">
+    <p>Bank: BRI</p>
+    <p>No Akaun: 1234567890</p>
+    <p>Nama: ADMIN</p>
+    <p>Jumlah: RM <span id="nominal"></span></p>
+
+    <a id="waTopup" target="_blank">
+        <button class="btn wa">Chat Admin</button>
+    </a>
 </div>
 
-<!-- TOP UP -->
-<div class="card" id="adminBox" style="display:none;">
-    <h3>Pindahan ke Admin</h3>
+<div id="withdrawBox" style="display:none;padding:15px;">
+    <input type="number" id="wdJumlah" placeholder="Jumlah">
+    <input type="text" id="wdBank" placeholder="Bank">
+    <input type="text" id="wdRek" placeholder="No Akaun">
+    <input type="text" id="wdNama" placeholder="Nama">
 
-    <div class="row"><span>Bank</span><span>BRI</span></div>
-    <div class="row"><span>No Akaun</span><span>1234567890</span></div>
-    <div class="row"><span>Nama</span><span>ADMIN STORE</span></div>
-    <div class="row"><span>Jumlah</span><span id="nominal">RM 0</span></div>
-
-    <div class="wa">
-        <a id="waTopup" target="_blank">
-            <button>Chat WhatsApp (Top Up)</button>
-        </a>
-    </div>
+    <button class="btn wa" onclick="submitWithdraw()">Ajukan</button>
 </div>
 
-<!-- WITHDRAW -->
-<div class="card" id="withdrawBox" style="display:none;">
-    <h3>Permohonan Pengeluaran</h3>
-
-    <input type="number" id="wdJumlah" placeholder="Masukkan jumlah">
-    <input type="text" id="wdBank" placeholder="Nama Bank">
-    <input type="text" id="wdRek" placeholder="Nombor Akaun">
-    <input type="text" id="wdNama" placeholder="Nama Pemilik Akaun">
-
-    <div class="wa">
-        <button onclick="submitWithdraw()">Ajukan Pengeluaran</button>
-    </div>
 </div>
+
+<!-- TRADING -->
+<div id="trading" class="section">
+
+<div class="price">RM <span id="price">100</span></div>
+
+<div class="chart"></div>
+
+<button class="btn green" onclick="buy()">BUY</button>
+<button class="btn red" onclick="sell()">SELL</button>
 
 </div>
 
 <script>
 
-let currentUser=null;
+let saldo=5000;
+let price=100;
 const noAdmin="6285183034790";
 
-const users=[
-    {id:"123",password:"123",nama:"Farid Fauzan",saldo:5000}
-];
+/* TAB */
+function showTab(tab){
+    document.getElementById("wallet").classList.remove("show");
+    document.getElementById("trading").classList.remove("show");
 
-// LOGIN
-function login(){
-    let id=document.getElementById("id").value;
-    let pass=document.getElementById("pass").value;
-
-    let user=users.find(u=>u.id===id && u.password===pass);
-
-    if(user){
-        currentUser=user;
-        document.getElementById("login").style.display="none";
-        document.getElementById("dashboard").style.display="block";
-
-        document.getElementById("user").innerText=user.nama+" ("+user.id+")";
-        updateSaldo();
-    }else{
-        alert("Login gagal");
-    }
+    document.getElementById(tab).classList.add("show");
 }
 
-// FORMAT
+/* FORMAT */
 function formatRM(x){
     return Number(x).toLocaleString("ms-MY");
 }
 
-// UPDATE SALDO
-function updateSaldo(){
-    document.getElementById("saldo").innerText="RM "+formatRM(currentUser.saldo);
+/* UPDATE */
+function update(){
+    document.getElementById("saldo").innerText=formatRM(saldo);
+    document.getElementById("price").innerText=formatRM(price);
 }
 
-// TOP UP
-function showAdmin(){
-    let jumlah=parseInt(document.getElementById("jumlah").value);
-
-    if(!jumlah){
-        alert("Masukkan jumlah!");
-        return;
-    }
+/* TOPUP */
+function topup(){
+    let j=parseInt(document.getElementById("jumlah").value);
+    if(!j){alert("Masukkan jumlah");return;}
 
     document.getElementById("adminBox").style.display="block";
     document.getElementById("withdrawBox").style.display="none";
+    document.getElementById("nominal").innerText=formatRM(j);
 
-    document.getElementById("nominal").innerText="RM "+formatRM(jumlah);
-
-    let msg=`Halo admin,
-Saya ingin top up RM ${formatRM(jumlah)}.
-
-ID: ${currentUser.id}
-Nama: ${currentUser.nama}`;
-
+    let msg=`Halo admin, top up RM ${formatRM(j)}`;
     document.getElementById("waTopup").href=
-        `https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`;
+    `https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`;
 }
 
-// SHOW WITHDRAW
+/* WITHDRAW */
 function showWithdraw(){
     document.getElementById("withdrawBox").style.display="block";
     document.getElementById("adminBox").style.display="none";
 }
 
-// SUBMIT WITHDRAW
 function submitWithdraw(){
-    let jumlah=document.getElementById("wdJumlah").value;
-    let bank=document.getElementById("wdBank").value;
-    let rek=document.getElementById("wdRek").value;
-    let nama=document.getElementById("wdNama").value;
+    let j=wdJumlah.value;
+    let b=wdBank.value;
+    let r=wdRek.value;
+    let n=wdNama.value;
 
-    if(!jumlah || !bank || !rek || !nama){
-        alert("Sila lengkapkan semua maklumat!");
-        return;
-    }
-
-    let msg=`Halo admin,
-Saya ingin melakukan pengeluaran.
-
-ID: ${currentUser.id}
-Nama: ${currentUser.nama}
-
-Jumlah: RM ${formatRM(jumlah)}
-Bank: ${bank}
-No Akaun: ${rek}
-Nama Akaun: ${nama}
-
-Mohon diproses.`;
-
-    window.open(`https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`,"_blank");
+    let msg=`Withdraw RM ${j} Bank ${b} Rek ${r} Nama ${n}`;
+    window.open(`https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`);
 }
+
+/* TRADING SIMULASI */
+setInterval(()=>{
+    let change=(Math.random()*4-2);
+    price+=change;
+    if(price<1)price=1;
+    update();
+},2000);
+
+function buy(){
+    if(saldo>=price){
+        saldo-=price;
+        alert("BUY berjaya");
+        update();
+    }else{
+        alert("Saldo tidak cukup");
+    }
+}
+
+function sell(){
+    saldo+=price;
+    alert("SELL berjaya");
+    update();
+}
+
+update();
 
 </script>
 
