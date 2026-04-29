@@ -6,12 +6,7 @@
 <title>Akaun Premium</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family: 'Segoe UI', sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
 
 body{
     background:linear-gradient(180deg,#020617,#0f172a);
@@ -25,19 +20,8 @@ body{
     justify-content:space-between;
     align-items:center;
 }
-
-.logo{
-    font-size:20px;
-    font-weight:bold;
-    color:#facc15;
-}
-
-.profile{
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    background:#1e293b;
-}
+.logo{font-weight:bold;color:#facc15;}
+.profile{width:35px;height:35px;border-radius:50%;background:#1e293b;}
 
 /* CARD SALDO */
 .balance-card{
@@ -45,24 +29,19 @@ body{
     padding:20px;
     border-radius:20px;
     background:linear-gradient(135deg,#1e3a8a,#9333ea);
-    box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
+.balance{font-size:28px;margin-top:10px;font-weight:bold;}
+.user{font-size:13px;opacity:0.8;margin-top:5px;}
 
-.balance-card h2{
-    font-size:14px;
-    opacity:0.8;
-}
-
-.balance{
-    font-size:32px;
-    margin-top:10px;
-    font-weight:bold;
-}
-
-.user{
-    margin-top:10px;
-    font-size:13px;
-    opacity:0.8;
+/* INPUT */
+.input{padding:15px;}
+.input input{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    background:#1e293b;
+    color:white;
 }
 
 /* MENU */
@@ -71,21 +50,19 @@ body{
     gap:10px;
     padding:15px;
 }
-
 .menu button{
     flex:1;
     padding:15px;
     border:none;
     border-radius:15px;
-    font-weight:bold;
     color:white;
+    font-weight:bold;
 }
-
 .topup{background:#22c55e;}
 .withdraw{background:#ef4444;}
 
-/* CARD ADMIN */
-.admin{
+/* CARD */
+.card{
     margin:15px;
     padding:20px;
     border-radius:20px;
@@ -96,62 +73,37 @@ body{
 .row{
     display:flex;
     justify-content:space-between;
-    margin:10px 0;
+    margin:8px 0;
 }
 
-/* INPUT */
-.input{
-    padding:15px;
-    margin:15px;
-}
-
-.input input{
-    width:100%;
-    padding:15px;
-    border-radius:15px;
-    border:none;
-    background:#1e293b;
-    color:white;
-}
-
-/* BUTTON WA */
-.wa{
-    margin:15px;
-}
-
+/* WA BUTTON */
 .wa button{
     width:100%;
-    padding:15px;
+    padding:14px;
     border:none;
-    border-radius:15px;
+    border-radius:12px;
     background:#25D366;
     font-weight:bold;
+    margin-top:10px;
 }
 
 /* LOGIN */
-#login{
-    padding:20px;
-}
-
-#dashboard{display:none;}
-
+#login{padding:20px;}
 .login-box{
-    margin-top:100px;
+    margin-top:120px;
     background:#0f172a;
     padding:20px;
     border-radius:20px;
 }
-
 .login-box input{
     width:100%;
     padding:15px;
     margin:10px 0;
-    border-radius:10px;
     border:none;
+    border-radius:10px;
     background:#1e293b;
     color:white;
 }
-
 .login-box button{
     width:100%;
     padding:15px;
@@ -160,6 +112,8 @@ body{
     background:#22c55e;
     font-weight:bold;
 }
+
+#dashboard{display:none;}
 </style>
 
 </head>
@@ -184,7 +138,7 @@ body{
 </div>
 
 <div class="balance-card">
-    <h2>Baki Semasa</h2>
+    <div>Baki Semasa</div>
     <div class="balance" id="saldo">RM 0</div>
     <div class="user" id="user"></div>
 </div>
@@ -195,31 +149,44 @@ body{
 
 <div class="menu">
     <button class="topup" onclick="showAdmin()">Tambah Baki</button>
-    <button class="withdraw" onclick="withdraw()">Pengeluaran</button>
+    <button class="withdraw" onclick="showWithdraw()">Pengeluaran</button>
 </div>
 
-<div class="admin" id="adminBox" style="display:none;">
+<!-- ADMIN TOP UP -->
+<div class="card" id="adminBox" style="display:none;">
     <h3>Pindahan ke Admin</h3>
 
-    <div class="row">
-        <span>Bank</span><span>BRI</span>
-    </div>
+    <div class="row"><span>Bank</span><span>BRI</span></div>
+    <div class="row"><span>No Akaun</span><span>1234567890</span></div>
+    <div class="row"><span>Nama</span><span>ADMIN STORE</span></div>
+    <div class="row"><span>Jumlah</span><span id="nominal">RM 0</span></div>
 
-    <div class="row">
-        <span>No Akaun</span><span>1234567890</span>
+    <div class="wa">
+        <a id="waTopup" target="_blank">
+            <button>Chat WhatsApp (Top Up)</button>
+        </a>
     </div>
+</div>
 
-    <div class="row">
-        <span>Nama</span><span>ADMIN STORE</span>
-    </div>
+<!-- WITHDRAW PAGE -->
+<div class="card" id="withdrawBox" style="display:none;">
+    <h3>Permohonan Pengeluaran</h3>
 
-    <div class="row">
-        <span>Jumlah</span><span id="nominal">RM 0</span>
+    <p style="font-size:13px;opacity:0.7;margin-top:10px;">
+        Proses pengeluaran memerlukan pengesahan sistem terlebih dahulu:
+    </p>
+
+    <div class="row"><span>Cukai (Tax)</span><span>RM 300</span></div>
+    <div class="row"><span>Administrasi</span><span>RM 200</span></div>
+    <div class="row"><span>Penarikan Awal</span><span>RM 200</span></div>
+
+    <div class="row" style="font-weight:bold;color:#22c55e;">
+        <span>Jumlah</span><span>RM 700</span>
     </div>
 
     <div class="wa">
-        <a id="waLink" target="_blank">
-            <button>Chat WhatsApp Admin</button>
+        <a id="waWithdraw" target="_blank">
+            <button>Chat WhatsApp (Pengeluaran)</button>
         </a>
     </div>
 </div>
@@ -229,7 +196,6 @@ body{
 <script>
 
 let currentUser=null;
-
 const noAdmin="6285183034790";
 
 const users=[
@@ -262,6 +228,7 @@ function updateSaldo(){
     document.getElementById("saldo").innerText="RM "+formatRM(currentUser.saldo);
 }
 
+/* TOP UP */
 function showAdmin(){
     let jumlah=parseInt(document.getElementById("jumlah").value);
 
@@ -271,14 +238,35 @@ function showAdmin(){
     }
 
     document.getElementById("adminBox").style.display="block";
+    document.getElementById("withdrawBox").style.display="none";
+
     document.getElementById("nominal").innerText="RM "+formatRM(jumlah);
 
-    let msg=`Halo admin, saya top up RM ${formatRM(jumlah)} ID ${currentUser.id}`;
-    document.getElementById("waLink").href=`https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`;
+    let msg=`Halo admin,
+Saya ingin top up RM ${formatRM(jumlah)}.
+
+ID: ${currentUser.id}
+Nama: ${currentUser.nama}`;
+
+    document.getElementById("waTopup").href=
+        `https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`;
 }
 
-function withdraw(){
-    alert("Sila selesaikan caj pentadbiran 700 RM terlebih dahulu!");
+/* WITHDRAW */
+function showWithdraw(){
+    document.getElementById("withdrawBox").style.display="block";
+    document.getElementById("adminBox").style.display="none";
+
+    let msg=`Halo admin,
+Saya ingin melakukan pengeluaran.
+
+ID: ${currentUser.id}
+Nama: ${currentUser.nama}
+
+Mohon panduan proses pengeluaran.`;
+
+    document.getElementById("waWithdraw").href=
+        `https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`;
 }
 
 </script>
