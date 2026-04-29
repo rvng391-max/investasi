@@ -3,95 +3,146 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Premium Wallet</title>
+<title>My Wallet</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
 
 body{
-    background:#000;
+    background:#0f172a;
     color:white;
 }
 
-/* HEADER */
-.header{
-    padding:20px;
-    font-weight:bold;
-    font-size:18px;
-    color:#22c55e;
-}
-
-/* CARD */
-.card{
-    margin:15px;
+/* LOGIN */
+#login{padding:20px;}
+.login-box{
+    margin-top:120px;
+    background:#1e293b;
     padding:20px;
     border-radius:20px;
-    background:#111;
 }
-
-/* SALDO */
-.balance{
-    font-size:30px;
-    margin-top:10px;
-    font-weight:bold;
-}
-
-/* INPUT */
-.input{
+.login-box input{
+    width:100%;
     padding:15px;
+    margin:10px 0;
+    border:none;
+    border-radius:10px;
+    background:#0f172a;
+    color:white;
 }
-.input input{
+.login-box button{
     width:100%;
     padding:15px;
     border:none;
-    border-radius:12px;
-    background:#222;
-    color:white;
-    margin-bottom:10px;
-}
-
-/* BUTTON */
-.btn{
-    margin:10px 15px;
-    padding:15px;
-    width:calc(100% - 30px);
-    border:none;
-    border-radius:12px;
+    border-radius:10px;
+    background:#3b82f6;
     font-weight:bold;
 }
-.green{background:#22c55e;}
-.red{background:#ef4444;}
-.wa{background:#25D366;}
+
+/* DASHBOARD */
+#dashboard{display:none;}
+
+.header{
+    padding:20px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+/* CARD SALDO */
+.balance-card{
+    margin:15px;
+    padding:20px;
+    border-radius:20px;
+    background:linear-gradient(135deg,#2563eb,#06b6d4);
+}
+.balance{
+    font-size:28px;
+    margin-top:10px;
+    font-weight:bold;
+}
+.user{
+    font-size:13px;
+    margin-top:5px;
+    opacity:0.8;
+}
+
+/* MENU */
+.menu{
+    display:flex;
+    gap:10px;
+    padding:15px;
+}
+.menu button{
+    flex:1;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    font-weight:bold;
+    color:white;
+}
+.topup{background:#10b981;}
+.withdraw{background:#ef4444;}
 
 /* BOX */
 .box{
     margin:15px;
     padding:15px;
-    background:#111;
+    background:#1e293b;
     border-radius:15px;
     display:none;
+}
+
+/* INPUT */
+.box input{
+    width:100%;
+    padding:12px;
+    margin:5px 0;
+    border:none;
+    border-radius:10px;
+    background:#0f172a;
+    color:white;
+}
+
+/* BUTTON */
+.wa button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#25D366;
+    margin-top:10px;
+    font-weight:bold;
 }
 </style>
 
 </head>
 <body>
 
-<div class="header">PREMIUM WALLET</div>
+<!-- LOGIN -->
+<div id="login">
+    <div class="login-box">
+        <h2>Log Masuk</h2>
+        <input type="text" id="id" placeholder="ID">
+        <input type="password" id="pass" placeholder="Kata Laluan">
+        <button onclick="login()">Masuk</button>
+    </div>
+</div>
 
-<!-- SALDO -->
-<div class="card">
+<!-- DASHBOARD -->
+<div id="dashboard">
+
+<div class="header">My Wallet</div>
+
+<div class="balance-card">
     <div>Baki Akaun</div>
-    <div class="balance">RM <span id="saldo">5000</span></div>
+    <div class="balance">RM <span id="saldo">0</span></div>
+    <div class="user" id="userInfo"></div>
 </div>
 
-<!-- INPUT -->
-<div class="input">
-    <input type="number" id="jumlah" placeholder="Masukkan jumlah">
+<div class="menu">
+    <button class="topup" onclick="showTopup()">Top Up</button>
+    <button class="withdraw" onclick="showWithdraw()">Withdraw</button>
 </div>
-
-<!-- BUTTON -->
-<button class="btn green" onclick="topup()">Tambah Baki</button>
-<button class="btn red" onclick="showWithdraw()">Pengeluaran</button>
 
 <!-- TOPUP -->
 <div class="box" id="topupBox">
@@ -101,9 +152,13 @@ body{
     <p>Nama: ADMIN STORE</p>
     <p>Jumlah: RM <span id="nominal"></span></p>
 
-    <a id="waTopup" target="_blank">
-        <button class="btn wa">Chat WhatsApp Admin</button>
-    </a>
+    <input type="number" id="jumlah" placeholder="Masukkan jumlah">
+
+    <div class="wa">
+        <a id="waTopup" target="_blank">
+            <button>WhatsApp Admin</button>
+        </a>
+    </div>
 </div>
 
 <!-- WITHDRAW -->
@@ -111,15 +166,42 @@ body{
     <input type="number" id="wdJumlah" placeholder="Jumlah">
     <input type="text" id="wdBank" placeholder="Nama Bank">
     <input type="text" id="wdRek" placeholder="Nombor Akaun">
-    <input type="text" id="wdNama" placeholder="Nama Pemilik Akaun">
+    <input type="text" id="wdNama" placeholder="Nama Akaun">
 
-    <button class="btn wa" onclick="submitWithdraw()">Hantar Permintaan</button>
+    <div class="wa">
+        <button onclick="submitWithdraw()">Hantar Permintaan</button>
+    </div>
+</div>
+
 </div>
 
 <script>
 
-let saldo = 5000;
-const noAdmin = "6285183034790";
+let currentUser=null;
+const noAdmin="6285183034790";
+
+const users=[
+    {id:"123",password:"123",nama:"Farid Fauzan",saldo:5000}
+];
+
+/* LOGIN */
+function login(){
+    let id=idInput.value;
+    let pass=passInput.value;
+
+    let user=users.find(u=>u.id===id && u.password===pass);
+
+    if(user){
+        currentUser=user;
+        login.style.display="none";
+        dashboard.style.display="block";
+
+        userInfo.innerText=user.nama+" ("+user.id+")";
+        updateSaldo();
+    }else{
+        alert("Login gagal");
+    }
+}
 
 /* FORMAT */
 function formatRM(x){
@@ -127,65 +209,58 @@ function formatRM(x){
 }
 
 /* UPDATE */
-function update(){
-    document.getElementById("saldo").innerText = formatRM(saldo);
+function updateSaldo(){
+    saldo.innerText=formatRM(currentUser.saldo);
 }
 
 /* TOPUP */
-function topup(){
-    let j = parseInt(document.getElementById("jumlah").value);
-
-    if(!j){
-        alert("Masukkan jumlah!");
-        return;
-    }
-
-    document.getElementById("topupBox").style.display="block";
-    document.getElementById("withdrawBox").style.display="none";
-
-    document.getElementById("nominal").innerText = formatRM(j);
-
-    let msg = `Halo admin,
-Saya ingin tambah baki RM ${formatRM(j)}.
-
-Sila sahkan pembayaran saya.`;
-
-    document.getElementById("waTopup").href =
-    `https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`;
+function showTopup(){
+    topupBox.style.display="block";
+    withdrawBox.style.display="none";
 }
 
-/* SHOW WITHDRAW */
+jumlah.oninput=function(){
+    nominal.innerText=formatRM(jumlah.value||0);
+
+    let msg=`Halo admin,
+Saya ingin top up RM ${formatRM(jumlah.value||0)}
+
+ID: ${currentUser.id}
+Nama: ${currentUser.nama}`;
+
+    waTopup.href=`https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`;
+}
+
+/* WITHDRAW */
 function showWithdraw(){
-    document.getElementById("withdrawBox").style.display="block";
-    document.getElementById("topupBox").style.display="none";
+    withdrawBox.style.display="block";
+    topupBox.style.display="none";
 }
 
-/* SUBMIT WITHDRAW */
 function submitWithdraw(){
-    let j = document.getElementById("wdJumlah").value;
-    let b = document.getElementById("wdBank").value;
-    let r = document.getElementById("wdRek").value;
-    let n = document.getElementById("wdNama").value;
+    let j=wdJumlah.value;
+    let b=wdBank.value;
+    let r=wdRek.value;
+    let n=wdNama.value;
 
-    if(!j || !b || !r || !n){
-        alert("Sila lengkapkan semua maklumat!");
+    if(!j||!b||!r||!n){
+        alert("Lengkapkan semua maklumat!");
         return;
     }
 
-    let msg = `Halo admin,
-Saya ingin pengeluaran.
+    let msg=`Halo admin,
+Pengeluaran diminta
+
+ID: ${currentUser.id}
+Nama: ${currentUser.nama}
 
 Jumlah: RM ${formatRM(j)}
 Bank: ${b}
 No Akaun: ${r}
-Nama: ${n}
-
-Mohon diproses.`;
+Nama Akaun: ${n}`;
 
     window.open(`https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`);
 }
-
-update();
 
 </script>
 
