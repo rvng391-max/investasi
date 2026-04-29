@@ -3,250 +3,282 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Premium Wallet</title>
+<title>Akaun Premium</title>
 
 <style>
 *{
+    margin:0;
+    padding:0;
     box-sizing:border-box;
     font-family: 'Segoe UI', sans-serif;
 }
 
 body{
-    margin:0;
-    background:linear-gradient(180deg,#050d1a,#0f2f45);
+    background:linear-gradient(180deg,#020617,#0f172a);
     color:white;
 }
 
-/* CONTAINER */
-.container{
-    max-width:420px;
-    margin:auto;
+/* HEADER */
+.header{
     padding:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
 
-/* CARD */
-.card{
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(10px);
-    border-radius:20px;
-    padding:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.6);
-}
-
-/* LOGIN */
-#dashboard{display:none;}
-
-input{
-    width:100%;
-    padding:14px;
-    margin:10px 0;
-    border:none;
-    border-radius:12px;
-    background:#0b1e2d;
-    color:white;
-}
-
-button{
-    width:100%;
-    padding:14px;
-    border:none;
-    border-radius:12px;
+.logo{
+    font-size:20px;
     font-weight:bold;
-    margin-top:10px;
+    color:#facc15;
 }
 
-/* BUTTON STYLE */
-.btn-primary{
-    background:linear-gradient(90deg,#00c853,#00e676);
-    color:white;
+.profile{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:#1e293b;
 }
 
-.btn-danger{
-    background:#ff5252;
-}
-
-.btn-wa{
-    background:#25D366;
-}
-
-.logout{
-    background:#555;
-}
-
-/* SALDO CARD */
+/* CARD SALDO */
 .balance-card{
-    background:linear-gradient(135deg,#00c853,#009688);
-    border-radius:20px;
+    margin:15px;
     padding:20px;
-    margin-bottom:15px;
+    border-radius:20px;
+    background:linear-gradient(135deg,#1e3a8a,#9333ea);
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
 
-.balance-title{
+.balance-card h2{
     font-size:14px;
     opacity:0.8;
 }
 
-.balance-value{
-    font-size:28px;
+.balance{
+    font-size:32px;
+    margin-top:10px;
     font-weight:bold;
-    margin-top:5px;
 }
 
-/* INFO */
-.info{
-    margin:8px 0;
-    font-size:14px;
-    opacity:0.9;
+.user{
+    margin-top:10px;
+    font-size:13px;
+    opacity:0.8;
 }
 
-/* ADMIN BOX */
-#adminBox{
-    display:none;
-    margin-top:15px;
-    background:rgba(255,255,255,0.05);
+/* MENU */
+.menu{
+    display:flex;
+    gap:10px;
+    padding:15px;
+}
+
+.menu button{
+    flex:1;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    font-weight:bold;
+    color:white;
+}
+
+.topup{background:#22c55e;}
+.withdraw{background:#ef4444;}
+
+/* CARD ADMIN */
+.admin{
+    margin:15px;
+    padding:20px;
+    border-radius:20px;
+    background:#0f172a;
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    margin:10px 0;
+}
+
+/* INPUT */
+.input{
+    padding:15px;
+    margin:15px;
+}
+
+.input input{
+    width:100%;
     padding:15px;
     border-radius:15px;
+    border:none;
+    background:#1e293b;
+    color:white;
 }
 
-</style>
-</head>
+/* BUTTON WA */
+.wa{
+    margin:15px;
+}
 
+.wa button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    background:#25D366;
+    font-weight:bold;
+}
+
+/* LOGIN */
+#login{
+    padding:20px;
+}
+
+#dashboard{display:none;}
+
+.login-box{
+    margin-top:100px;
+    background:#0f172a;
+    padding:20px;
+    border-radius:20px;
+}
+
+.login-box input{
+    width:100%;
+    padding:15px;
+    margin:10px 0;
+    border-radius:10px;
+    border:none;
+    background:#1e293b;
+    color:white;
+}
+
+.login-box button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#22c55e;
+    font-weight:bold;
+}
+</style>
+
+</head>
 <body>
 
-<div class="container">
-
 <!-- LOGIN -->
-<div class="card" id="loginBox">
-    <h2>Log Masuk</h2>
-    <input type="text" id="id" placeholder="Masukkan ID">
-    <input type="password" id="pass" placeholder="Kata Laluan">
-    <button class="btn-primary" onclick="login()">Masuk</button>
+<div id="login">
+    <div class="login-box">
+        <h2>Log Masuk</h2>
+        <input type="text" id="id" placeholder="ID">
+        <input type="password" id="pass" placeholder="Kata Laluan">
+        <button onclick="login()">Masuk</button>
+    </div>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard">
 
-    <!-- SALDO -->
-    <div class="balance-card">
-        <div class="balance-title">Baki Semasa</div>
-        <div class="balance-value">RM <span id="showSaldo"></span></div>
+<div class="header">
+    <div class="logo">AKAUN VIP</div>
+    <div class="profile"></div>
+</div>
+
+<div class="balance-card">
+    <h2>Baki Semasa</h2>
+    <div class="balance" id="saldo">RM 0</div>
+    <div class="user" id="user"></div>
+</div>
+
+<div class="input">
+    <input type="number" id="jumlah" placeholder="Masukkan jumlah">
+</div>
+
+<div class="menu">
+    <button class="topup" onclick="showAdmin()">Tambah Baki</button>
+    <button class="withdraw" onclick="withdraw()">Pengeluaran</button>
+</div>
+
+<div class="admin" id="adminBox" style="display:none;">
+    <h3>Pindahan ke Admin</h3>
+
+    <div class="row">
+        <span>Bank</span><span>BRI</span>
     </div>
 
-    <div class="card">
-        <div class="info">ID: <span id="showId"></span></div>
-        <div class="info">Nama: <span id="showNama"></span></div>
-
-        <input type="number" id="jumlah" placeholder="Masukkan jumlah">
-
-        <button class="btn-primary" onclick="showAdmin()">Tambah Baki</button>
-        <button class="btn-danger" onclick="withdraw()">Pengeluaran</button>
-
-        <!-- ADMIN -->
-        <div id="adminBox">
-            <p><b>Pindahan ke Akaun Admin</b></p>
-            <p>Bank: BRI</p>
-            <p>No Akaun: <b>1234567890</b></p>
-            <p>Nama: <b>ADMIN STORE</b></p>
-            <p>Jumlah: RM <span id="nominal"></span></p>
-
-            <a id="waLink" target="_blank">
-                <button class="btn-wa">WhatsApp Admin</button>
-            </a>
-        </div>
-
-        <button class="logout" onclick="logout()">Log Keluar</button>
+    <div class="row">
+        <span>No Akaun</span><span>1234567890</span>
     </div>
 
+    <div class="row">
+        <span>Nama</span><span>ADMIN STORE</span>
+    </div>
+
+    <div class="row">
+        <span>Jumlah</span><span id="nominal">RM 0</span>
+    </div>
+
+    <div class="wa">
+        <a id="waLink" target="_blank">
+            <button>Chat WhatsApp Admin</button>
+        </a>
+    </div>
 </div>
 
 </div>
 
 <script>
 
-let currentUser = null;
-const noAdmin = "6285183034790";
+let currentUser=null;
 
-const users = [
-    {id:"123", password:"123", nama:"Farid Fauzan", saldo:5000},
-    {id:"456", password:"456", nama:"Budi", saldo:1500}
+const noAdmin="6285183034790";
+
+const users=[
+    {id:"123",password:"123",nama:"Farid Fauzan",saldo:5000}
 ];
 
-// AUTO LOGIN
-window.onload = function(){
-    let session = localStorage.getItem("loginUser");
-    if(session){
-        showDashboard(JSON.parse(session));
-    }
-};
-
-// LOGIN
 function login(){
-    let id = document.getElementById("id").value;
-    let pass = document.getElementById("pass").value;
+    let id=document.getElementById("id").value;
+    let pass=document.getElementById("pass").value;
 
-    let user = users.find(u => u.id === id && u.password === pass);
+    let user=users.find(u=>u.id===id && u.password===pass);
 
     if(user){
-        currentUser = user;
-        localStorage.setItem("loginUser", JSON.stringify(user));
-        showDashboard(user);
-    } else {
-        alert("ID atau kata laluan salah!");
+        currentUser=user;
+        document.getElementById("login").style.display="none";
+        document.getElementById("dashboard").style.display="block";
+
+        document.getElementById("user").innerText=user.nama+" ("+user.id+")";
+        updateSaldo();
+    }else{
+        alert("Login gagal");
     }
 }
 
-// DASHBOARD
-function showDashboard(user){
-    currentUser = user;
-
-    document.getElementById("loginBox").style.display="none";
-    document.getElementById("dashboard").style.display="block";
-
-    document.getElementById("showId").innerText = user.id;
-    document.getElementById("showNama").innerText = user.nama;
-    updateSaldo();
+function formatRM(x){
+    return x.toLocaleString("ms-MY");
 }
 
-// FORMAT
-function formatRM(angka){
-    return angka.toLocaleString("ms-MY");
-}
-
-// UPDATE SALDO
 function updateSaldo(){
-    document.getElementById("showSaldo").innerText = formatRM(currentUser.saldo);
+    document.getElementById("saldo").innerText="RM "+formatRM(currentUser.saldo);
 }
 
-// SHOW ADMIN
 function showAdmin(){
-    let jumlah = parseInt(document.getElementById("jumlah").value);
+    let jumlah=parseInt(document.getElementById("jumlah").value);
 
-    if(!jumlah || jumlah <= 0){
-        alert("Masukkan jumlah dahulu!");
+    if(!jumlah){
+        alert("Masukkan jumlah!");
         return;
     }
 
-    document.getElementById("adminBox").style.display = "block";
-    document.getElementById("nominal").innerText = formatRM(jumlah);
+    document.getElementById("adminBox").style.display="block";
+    document.getElementById("nominal").innerText="RM "+formatRM(jumlah);
 
-    let pesan = `Halo admin,
-Saya ingin top up RM ${formatRM(jumlah)}.
-ID: ${currentUser.id}
-Nama: ${currentUser.nama}`;
-
-    let link = `https://wa.me/${noAdmin}?text=${encodeURIComponent(pesan)}`;
-    document.getElementById("waLink").href = link;
+    let msg=`Halo admin, saya top up RM ${formatRM(jumlah)} ID ${currentUser.id}`;
+    document.getElementById("waLink").href=`https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`;
 }
 
-// WITHDRAW
 function withdraw(){
     alert("Sila selesaikan caj pentadbiran 700 RM terlebih dahulu!");
-}
-
-// LOGOUT
-function logout(){
-    localStorage.removeItem("loginUser");
-    location.reload();
 }
 
 </script>
