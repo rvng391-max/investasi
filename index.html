@@ -2,59 +2,57 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyAccount Pro</title>
 
 <style>
+*{box-sizing:border-box;font-family:Arial}
 body{
     margin:0;
-    font-family:Arial;
-    background:#0b1e2d;
+    background:linear-gradient(180deg,#081420,#0f2f45);
     color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
 }
-
-.container{
-    width:320px;
-}
-
-/* CARD */
+.container{padding:20px;max-width:400px;margin:auto;}
 .card{
     background:#112b3c;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 0 10px rgba(0,0,0,0.5);
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.5);
 }
-
 input{
     width:100%;
-    padding:10px;
+    padding:14px;
     margin:10px 0;
     border:none;
-    border-radius:8px;
+    border-radius:12px;
+    background:#0b1e2d;
+    color:white;
 }
-
 button{
     width:100%;
-    padding:10px;
-    background:#00c853;
+    padding:14px;
     border:none;
+    border-radius:12px;
     color:white;
-    border-radius:8px;
-    cursor:pointer;
+    font-weight:bold;
+    margin-top:5px;
 }
+.btn-topup{background:#00c853;}
+.btn-withdraw{background:#ff5252;}
+.logout{background:#888;margin-top:10px;}
 
-.logout{
-    background:red;
-    margin-top:15px;
+.info{
+    background:#0b1e2d;
+    padding:15px;
+    border-radius:15px;
+    margin:10px 0;
 }
-
-/* DASHBOARD */
-#dashboard{
-    display:none;
+.saldo{
+    color:#00e676;
+    font-size:20px;
+    font-weight:bold;
 }
+#dashboard{display:none;}
 </style>
 
 </head>
@@ -65,17 +63,25 @@ button{
 <!-- LOGIN -->
 <div class="card" id="loginBox">
     <h2>Login</h2>
-    <input type="text" id="id" placeholder="Masukkan ID">
+    <input type="text" id="id" placeholder="ID">
     <input type="password" id="pass" placeholder="Password">
-    <button onclick="login()">Masuk</button>
+    <button class="btn-topup" onclick="login()">Masuk</button>
 </div>
 
 <!-- DASHBOARD -->
 <div class="card" id="dashboard">
     <h2>Dashboard</h2>
-    <p><b>ID:</b> <span id="showId"></span></p>
-    <p><b>Nama:</b> <span id="showNama"></span></p>
-    <p><b>Saldo:</b> Rp <span id="showSaldo"></span></p>
+
+    <div class="info">ID: <span id="showId"></span></div>
+    <div class="info">Nama: <span id="showNama"></span></div>
+    <div class="info saldo">Saldo: Rp <span id="showSaldo"></span></div>
+
+    <!-- INPUT -->
+    <input type="number" id="jumlah" placeholder="Masukkan jumlah">
+
+    <!-- BUTTON -->
+    <button class="btn-topup" onclick="tambahSaldo()">Isi Saldo</button>
+    <button class="btn-withdraw" onclick="withdraw()">Withdraw</button>
 
     <button class="logout" onclick="logout()">Logout</button>
 </div>
@@ -84,13 +90,15 @@ button{
 
 <script>
 
-// DATABASE USER (bisa tambah sendiri)
+let currentUser = null;
+
+// DATA USER
 const users = [
-    {id:"123", password:"123", nama:"Farid", saldo:"10.000.000"},
-    {id:"456", password:"456", nama:"Budi", saldo:"5.000.000"}
+    {id:"123", password:"123", nama:"Farid Fauzan", saldo:25000000},
+    {id:"456", password:"456", nama:"Budi", saldo:5000000}
 ];
 
-// AUTO LOGIN (session)
+// AUTO LOGIN
 window.onload = function(){
     let session = localStorage.getItem("loginUser");
     if(session){
@@ -98,16 +106,17 @@ window.onload = function(){
     }
 };
 
-// LOGIN FUNCTION
+// LOGIN
 function login(){
-    let inputId = document.getElementById("id").value;
-    let inputPass = document.getElementById("pass").value;
+    let id = document.getElementById("id").value;
+    let pass = document.getElementById("pass").value;
 
-    let found = users.find(u => u.id === inputId && u.password === inputPass);
+    let user = users.find(u => u.id === id && u.password === pass);
 
-    if(found){
-        localStorage.setItem("loginUser", JSON.stringify(found));
-        showDashboard(found);
+    if(user){
+        currentUser = user;
+        localStorage.setItem("loginUser", JSON.stringify(user));
+        showDashboard(user);
     } else {
         alert("ID atau Password salah!");
     }
@@ -115,12 +124,64 @@ function login(){
 
 // TAMPIL DASHBOARD
 function showDashboard(user){
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("dashboard").style.display = "block";
+    currentUser = user;
+
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("dashboard").style.display="block";
 
     document.getElementById("showId").innerText = user.id;
     document.getElementById("showNama").innerText = user.nama;
-    document.getElementById("showSaldo").innerText = user.saldo;
+    updateSaldo();
+}
+
+// FORMAT RUPIAH
+function formatRupiah(angka){
+    return angka.toLocaleString("id-ID");
+}
+
+// UPDATE SALDO
+function updateSaldo(){
+    document.getElementById("showSaldo").innerText = formatRupiah(currentUser.saldo);
+}
+
+// ISI SALDO
+function tambahSaldo(){
+    let jumlah = parseInt(document.getElementById("jumlah").value);
+
+    if(!jumlah || jumlah <= 0){
+        alert("Masukkan jumlah valid!");
+        return;
+    }
+
+    currentUser.saldo += jumlah;
+    simpan();
+    alert("Saldo berhasil ditambahkan!");
+}
+
+// WITHDRAW
+function withdraw(){
+    let jumlah = parseInt(document.getElementById("jumlah").value);
+
+    if(!jumlah || jumlah <= 0){
+        alert("Masukkan jumlah valid!");
+        return;
+    }
+
+    if(jumlah > currentUser.saldo){
+        alert("Saldo tidak cukup!");
+        return;
+    }
+
+    currentUser.saldo -= jumlah;
+    simpan();
+    alert("Withdraw berhasil!");
+}
+
+// SIMPAN
+function simpan(){
+    localStorage.setItem("loginUser", JSON.stringify(currentUser));
+    updateSaldo();
+    document.getElementById("jumlah").value="";
 }
 
 // LOGOUT
