@@ -3,76 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Super Wallet Trading</title>
+<title>Wallet</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
-body{background:#020617;color:white;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
+
+body{
+    background:#000;
+    color:white;
+}
 
 /* NAV */
 .nav{
     display:flex;
-    background:#0f172a;
+    background:#111;
 }
 .nav button{
     flex:1;
     padding:15px;
     border:none;
     background:none;
-    color:white;
+    color:#aaa;
     font-weight:bold;
 }
-.active{background:#1e293b;}
+.nav button.active{
+    color:#fff;
+    border-bottom:2px solid #22c55e;
+}
 
 /* HEADER */
-.header{padding:20px;font-size:18px;font-weight:bold;color:#facc15;}
+.header{
+    padding:20px;
+    font-weight:bold;
+    color:#22c55e;
+}
 
 /* CARD */
 .card{
     margin:15px;
     padding:20px;
-    border-radius:20px;
-    background:linear-gradient(135deg,#1e3a8a,#9333ea);
+    border-radius:15px;
+    background:#111;
 }
 
-.balance{font-size:28px;margin-top:10px;font-weight:bold;}
+/* SALDO */
+.balance{
+    font-size:30px;
+    margin-top:10px;
+}
 
 /* INPUT */
-.input{padding:15px;}
+.input{
+    padding:15px;
+}
 .input input{
-    width:100%;padding:15px;border:none;border-radius:15px;background:#1e293b;color:white;
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#222;
+    color:white;
 }
 
 /* BUTTON */
 .btn{
     margin:10px 15px;
     padding:15px;
-    border:none;
-    border-radius:15px;
-    font-weight:bold;
     width:calc(100% - 30px);
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
 }
 .green{background:#22c55e;}
 .red{background:#ef4444;}
-.wa{background:#25D366;}
 
 /* SECTION */
 .section{display:none;}
 .show{display:block;}
-
-/* TRADING */
-.price{font-size:30px;text-align:center;margin-top:20px;}
-.chart{
-    height:100px;
-    margin:15px;
-    background:linear-gradient(90deg,#22c55e,#16a34a);
-    border-radius:10px;
-}
 </style>
 </head>
 <body>
 
-<div class="header">SUPER APP</div>
+<div class="header">SIMULASI WALLET</div>
 
 <div class="nav">
     <button class="active" onclick="showTab('wallet')">Wallet</button>
@@ -83,56 +95,31 @@ body{background:#020617;color:white;}
 <div id="wallet" class="section show">
 
 <div class="card">
-    <div>Baki</div>
-    <div class="balance">RM <span id="saldo">5000</span></div>
+    <div>Baki (Simulasi)</div>
+    <div class="balance">RM <span id="saldo">0</span></div>
 </div>
 
 <div class="input">
-    <input type="number" id="jumlah" placeholder="Masukkan jumlah">
+    <input type="number" id="jumlah" placeholder="Masukkan deposit">
 </div>
 
-<button class="btn green" onclick="topup()">Tambah Baki</button>
-<button class="btn red" onclick="showWithdraw()">Pengeluaran</button>
-
-<div id="adminBox" style="display:none;padding:15px;">
-    <p>Bank: BRI</p>
-    <p>No Akaun: 1234567890</p>
-    <p>Nama: ADMIN</p>
-    <p>Jumlah: RM <span id="nominal"></span></p>
-
-    <a id="waTopup" target="_blank">
-        <button class="btn wa">Chat Admin</button>
-    </a>
-</div>
-
-<div id="withdrawBox" style="display:none;padding:15px;">
-    <input type="number" id="wdJumlah" placeholder="Jumlah">
-    <input type="text" id="wdBank" placeholder="Bank">
-    <input type="text" id="wdRek" placeholder="No Akaun">
-    <input type="text" id="wdNama" placeholder="Nama">
-
-    <button class="btn wa" onclick="submitWithdraw()">Ajukan</button>
-</div>
+<button class="btn green" onclick="deposit()">Deposit</button>
 
 </div>
 
 <!-- TRADING -->
 <div id="trading" class="section">
-
-<div class="price">RM <span id="price">100</span></div>
-
-<div class="chart"></div>
-
-<button class="btn green" onclick="buy()">BUY</button>
-<button class="btn red" onclick="sell()">SELL</button>
-
+<div class="card">
+    <div>Harga (Simulasi)</div>
+    <div class="balance">RM <span id="price">100</span></div>
+</div>
 </div>
 
 <script>
 
-let saldo=5000;
-let price=100;
-const noAdmin="6285183034790";
+let saldo = 0;
+let price = 100;
+let growthInterval = null;
 
 /* TAB */
 function showTab(tab){
@@ -140,6 +127,12 @@ function showTab(tab){
     document.getElementById("trading").classList.remove("show");
 
     document.getElementById(tab).classList.add("show");
+
+    let buttons = document.querySelectorAll(".nav button");
+    buttons.forEach(b=>b.classList.remove("active"));
+
+    if(tab==="wallet") buttons[0].classList.add("active");
+    else buttons[1].classList.add("active");
 }
 
 /* FORMAT */
@@ -149,63 +142,45 @@ function formatRM(x){
 
 /* UPDATE */
 function update(){
-    document.getElementById("saldo").innerText=formatRM(saldo);
-    document.getElementById("price").innerText=formatRM(price);
+    document.getElementById("saldo").innerText = formatRM(saldo);
+    document.getElementById("price").innerText = formatRM(price);
 }
 
-/* TOPUP */
-function topup(){
-    let j=parseInt(document.getElementById("jumlah").value);
-    if(!j){alert("Masukkan jumlah");return;}
+/* DEPOSIT */
+function deposit(){
+    let j = parseInt(document.getElementById("jumlah").value);
 
-    document.getElementById("adminBox").style.display="block";
-    document.getElementById("withdrawBox").style.display="none";
-    document.getElementById("nominal").innerText=formatRM(j);
+    if(!j){
+        alert("Masukkan jumlah");
+        return;
+    }
 
-    let msg=`Halo admin, top up RM ${formatRM(j)}`;
-    document.getElementById("waTopup").href=
-    `https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`;
+    saldo += j;
+    update();
+
+    startGrowth();
+
+    alert("Deposit berjaya (SIMULASI)");
 }
 
-/* WITHDRAW */
-function showWithdraw(){
-    document.getElementById("withdrawBox").style.display="block";
-    document.getElementById("adminBox").style.display="none";
+/* AUTO GROWTH */
+function startGrowth(){
+    if(growthInterval) return;
+
+    growthInterval = setInterval(()=>{
+        let naik = Math.floor(Math.random()*5)+1;
+        saldo += naik;
+        update();
+    },3000);
 }
 
-function submitWithdraw(){
-    let j=wdJumlah.value;
-    let b=wdBank.value;
-    let r=wdRek.value;
-    let n=wdNama.value;
-
-    let msg=`Withdraw RM ${j} Bank ${b} Rek ${r} Nama ${n}`;
-    window.open(`https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`);
-}
-
-/* TRADING SIMULASI */
+/* HARGA NAIK TURUN */
 setInterval(()=>{
-    let change=(Math.random()*4-2);
-    price+=change;
-    if(price<1)price=1;
+    let change = Math.random()*4 - 2;
+    price += change;
+    if(price < 1) price = 1;
     update();
 },2000);
-
-function buy(){
-    if(saldo>=price){
-        saldo-=price;
-        alert("BUY berjaya");
-        update();
-    }else{
-        alert("Saldo tidak cukup");
-    }
-}
-
-function sell(){
-    saldo+=price;
-    alert("SELL berjaya");
-    update();
-}
 
 update();
 
