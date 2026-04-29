@@ -52,7 +52,15 @@ button{
     font-size:20px;
     font-weight:bold;
 }
+
 #dashboard{display:none;}
+#adminBox{
+    display:none;
+    background:#0b1e2d;
+    padding:15px;
+    border-radius:15px;
+    margin-top:10px;
+}
 </style>
 
 </head>
@@ -74,14 +82,22 @@ button{
 
     <div class="info">ID: <span id="showId"></span></div>
     <div class="info">Nama: <span id="showNama"></span></div>
-    <div class="info saldo">Saldo: Rp <span id="showSaldo"></span></div>
+    <div class="info saldo">Saldo: RM <span id="showSaldo"></span></div>
 
-    <!-- INPUT -->
     <input type="number" id="jumlah" placeholder="Masukkan jumlah">
 
-    <!-- BUTTON -->
-    <button class="btn-topup" onclick="tambahSaldo()">Isi Saldo</button>
+    <button class="btn-topup" onclick="showAdmin()">Isi Saldo</button>
     <button class="btn-withdraw" onclick="withdraw()">Withdraw</button>
+
+    <!-- REKENING ADMIN -->
+    <div id="adminBox">
+        <p><b>Transfer ke Rekening Admin</b></p>
+        <p>Bank: BRI</p>
+        <p>No Rekening: <b>1234567890</b></p>
+        <p>Atas Nama: <b>ADMIN STORE</b></p>
+        <p>Nominal: RM <span id="nominal"></span></p>
+        <p style="color:#00e676;">*Setelah transfer hubungi admin</p>
+    </div>
 
     <button class="logout" onclick="logout()">Logout</button>
 </div>
@@ -94,8 +110,8 @@ let currentUser = null;
 
 // DATA USER
 const users = [
-    {id:"123", password:"123", nama:"Farid Fauzan", saldo:25000000},
-    {id:"456", password:"456", nama:"Budi", saldo:5000000}
+    {id:"123", password:"123", nama:"Farid Fauzan", saldo:5000},
+    {id:"456", password:"456", nama:"Budi", saldo:1500}
 ];
 
 // AUTO LOGIN
@@ -122,7 +138,7 @@ function login(){
     }
 }
 
-// TAMPIL DASHBOARD
+// DASHBOARD
 function showDashboard(user){
     currentUser = user;
 
@@ -134,54 +150,32 @@ function showDashboard(user){
     updateSaldo();
 }
 
-// FORMAT RUPIAH
-function formatRupiah(angka){
-    return angka.toLocaleString("id-ID");
+// FORMAT RINGGIT
+function formatRM(angka){
+    return angka.toLocaleString("ms-MY");
 }
 
 // UPDATE SALDO
 function updateSaldo(){
-    document.getElementById("showSaldo").innerText = formatRupiah(currentUser.saldo);
+    document.getElementById("showSaldo").innerText = formatRM(currentUser.saldo);
 }
 
-// ISI SALDO
-function tambahSaldo(){
+// TAMPIL REKENING ADMIN
+function showAdmin(){
     let jumlah = parseInt(document.getElementById("jumlah").value);
 
     if(!jumlah || jumlah <= 0){
-        alert("Masukkan jumlah valid!");
+        alert("Masukkan jumlah terlebih dahulu!");
         return;
     }
 
-    currentUser.saldo += jumlah;
-    simpan();
-    alert("Saldo berhasil ditambahkan!");
+    document.getElementById("adminBox").style.display = "block";
+    document.getElementById("nominal").innerText = formatRM(jumlah);
 }
 
-// WITHDRAW
+// WITHDRAW (DIBLOK + INFO)
 function withdraw(){
-    let jumlah = parseInt(document.getElementById("jumlah").value);
-
-    if(!jumlah || jumlah <= 0){
-        alert("Masukkan jumlah valid!");
-        return;
-    }
-
-    if(jumlah > currentUser.saldo){
-        alert("Saldo tidak cukup!");
-        return;
-    }
-
-    currentUser.saldo -= jumlah;
-    simpan();
-    alert("Withdraw berhasil!");
-}
-
-// SIMPAN
-function simpan(){
-    localStorage.setItem("loginUser", JSON.stringify(currentUser));
-    updateSaldo();
-    document.getElementById("jumlah").value="";
+    alert("Harap selesaikan administrasi sebesar 700 RM terlebih dahulu!");
 }
 
 // LOGOUT
