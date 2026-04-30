@@ -3,40 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Wallet</title>
+<title>My Wallet Premium</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif;}
 
 body{
-    background:#0f172a;
+    background:#0b1220;
     color:white;
 }
 
 /* LOGIN */
-#login{padding:20px;}
-.login-box{
-    margin-top:120px;
-    background:#1e293b;
+#login{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
     padding:20px;
-    border-radius:20px;
 }
+
+.login-box{
+    width:100%;
+    max-width:350px;
+    background:#111c33;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+.login-box h2{
+    margin-bottom:15px;
+}
+
 .login-box input{
     width:100%;
-    padding:15px;
-    margin:10px 0;
+    padding:14px;
+    margin:8px 0;
     border:none;
     border-radius:10px;
-    background:#0f172a;
+    background:#0b1220;
     color:white;
 }
+
 .login-box button{
     width:100%;
-    padding:15px;
+    padding:14px;
     border:none;
     border-radius:10px;
     background:#3b82f6;
+    color:white;
     font-weight:bold;
+    cursor:pointer;
 }
 
 /* DASHBOARD */
@@ -44,26 +61,27 @@ body{
 
 .header{
     padding:20px;
-    font-size:18px;
+    font-size:20px;
     font-weight:bold;
 }
 
-/* CARD SALDO */
 .balance-card{
     margin:15px;
     padding:20px;
     border-radius:20px;
     background:linear-gradient(135deg,#2563eb,#06b6d4);
 }
+
 .balance{
-    font-size:28px;
+    font-size:30px;
     margin-top:10px;
     font-weight:bold;
 }
+
 .user{
     font-size:13px;
-    margin-top:5px;
     opacity:0.8;
+    margin-top:5px;
 }
 
 /* MENU */
@@ -72,6 +90,7 @@ body{
     gap:10px;
     padding:15px;
 }
+
 .menu button{
     flex:1;
     padding:15px;
@@ -79,7 +98,9 @@ body{
     border-radius:15px;
     font-weight:bold;
     color:white;
+    cursor:pointer;
 }
+
 .topup{background:#10b981;}
 .withdraw{background:#ef4444;}
 
@@ -87,23 +108,22 @@ body{
 .box{
     margin:15px;
     padding:15px;
-    background:#1e293b;
+    background:#111c33;
     border-radius:15px;
     display:none;
 }
 
-/* INPUT */
 .box input{
     width:100%;
     padding:12px;
     margin:5px 0;
     border:none;
     border-radius:10px;
-    background:#0f172a;
+    background:#0b1220;
     color:white;
 }
 
-/* BUTTON */
+/* BUTTON WA */
 .wa button{
     width:100%;
     padding:14px;
@@ -112,18 +132,19 @@ body{
     background:#25D366;
     margin-top:10px;
     font-weight:bold;
+    cursor:pointer;
 }
 </style>
-
 </head>
+
 <body>
 
 <!-- LOGIN -->
 <div id="login">
     <div class="login-box">
         <h2>Log Masuk</h2>
-        <input type="text" id="id" placeholder="ID">
-        <input type="password" id="pass" placeholder="Kata Laluan">
+        <input type="text" id="idInput" placeholder="ID">
+        <input type="password" id="passInput" placeholder="Kata Laluan">
         <button onclick="login()">Masuk</button>
     </div>
 </div>
@@ -131,7 +152,7 @@ body{
 <!-- DASHBOARD -->
 <div id="dashboard">
 
-<div class="header">My Wallet</div>
+<div class="header">My Wallet Premium</div>
 
 <div class="balance-card">
     <div>Baki Akaun</div>
@@ -146,11 +167,12 @@ body{
 
 <!-- TOPUP -->
 <div class="box" id="topupBox">
-    <p><b>Pindahan ke Admin</b></p>
+    <p><b>Top Up ke Admin</b></p>
     <p>Bank: BRI</p>
-    <p>No Akaun: 1234567890</p>
+    <p>Acc: 1234567890</p>
     <p>Nama: ADMIN STORE</p>
-    <p>Jumlah: RM <span id="nominal"></span></p>
+
+    <p style="margin-top:10px;">Jumlah: RM <span id="nominal">0</span></p>
 
     <input type="number" id="jumlah" placeholder="Masukkan jumlah">
 
@@ -165,7 +187,7 @@ body{
 <div class="box" id="withdrawBox">
     <input type="number" id="wdJumlah" placeholder="Jumlah">
     <input type="text" id="wdBank" placeholder="Nama Bank">
-    <input type="text" id="wdRek" placeholder="Nombor Akaun">
+    <input type="text" id="wdRek" placeholder="No Akaun">
     <input type="text" id="wdNama" placeholder="Nama Akaun">
 
     <div class="wa">
@@ -177,87 +199,108 @@ body{
 
 <script>
 
-let currentUser=null;
-const noAdmin="6285183034790";
+const noAdmin = "6285183034790";
 
-const users=[
-    {id:"123",password:"123",nama:"Farid Fauzan",saldo:5000}
+const users = [
+    {id:"123", password:"123", nama:"Farid Fauzan", saldo:5000}
 ];
+
+let currentUser = null;
+
+/* ELEMENT */
+const loginBox = document.getElementById("login");
+const dashboard = document.getElementById("dashboard");
+
+const idInput = document.getElementById("idInput");
+const passInput = document.getElementById("passInput");
+
+const saldoEl = document.getElementById("saldo");
+const userInfo = document.getElementById("userInfo");
+
+const topupBox = document.getElementById("topupBox");
+const withdrawBox = document.getElementById("withdrawBox");
+
+const jumlah = document.getElementById("jumlah");
+const nominal = document.getElementById("nominal");
+
+const waTopup = document.getElementById("waTopup");
 
 /* LOGIN */
 function login(){
-    let id=idInput.value;
-    let pass=passInput.value;
+    const id = idInput.value;
+    const pass = passInput.value;
 
-    let user=users.find(u=>u.id===id && u.password===pass);
+    const user = users.find(u => u.id === id && u.password === pass);
 
-    if(user){
-        currentUser=user;
-        login.style.display="none";
-        dashboard.style.display="block";
-
-        userInfo.innerText=user.nama+" ("+user.id+")";
-        updateSaldo();
-    }else{
+    if(!user){
         alert("Login gagal");
+        return;
     }
+
+    currentUser = user;
+
+    loginBox.style.display = "none";
+    dashboard.style.display = "block";
+
+    userInfo.innerText = `${user.nama} (${user.id})`;
+    updateSaldo();
 }
 
 /* FORMAT */
 function formatRM(x){
-    return Number(x).toLocaleString("ms-MY");
+    return Number(x || 0).toLocaleString("ms-MY");
 }
 
-/* UPDATE */
+/* SALDO */
 function updateSaldo(){
-    saldo.innerText=formatRM(currentUser.saldo);
+    saldoEl.innerText = formatRM(currentUser.saldo);
 }
 
 /* TOPUP */
 function showTopup(){
-    topupBox.style.display="block";
-    withdrawBox.style.display="none";
+    topupBox.style.display = "block";
+    withdrawBox.style.display = "none";
 }
 
-jumlah.oninput=function(){
-    nominal.innerText=formatRM(jumlah.value||0);
+jumlah.addEventListener("input", function(){
+    nominal.innerText = formatRM(jumlah.value);
 
-    let msg=`Halo admin,
-Saya ingin top up RM ${formatRM(jumlah.value||0)}
+    const msg = `Halo admin,
+Saya ingin top up RM ${formatRM(jumlah.value)}
 
 ID: ${currentUser.id}
 Nama: ${currentUser.nama}`;
 
-    waTopup.href=`https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`;
-}
+    waTopup.href = `https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`;
+});
 
 /* WITHDRAW */
 function showWithdraw(){
-    withdrawBox.style.display="block";
-    topupBox.style.display="none";
+    withdrawBox.style.display = "block";
+    topupBox.style.display = "none";
 }
 
 function submitWithdraw(){
-    let j=wdJumlah.value;
-    let b=wdBank.value;
-    let r=wdRek.value;
-    let n=wdNama.value;
+    const j = document.getElementById("wdJumlah").value;
+    const b = document.getElementById("wdBank").value;
+    const r = document.getElementById("wdRek").value;
+    const n = document.getElementById("wdNama").value;
 
-    if(!j||!b||!r||!n){
-        alert("Lengkapkan semua maklumat!");
+    if(!j || !b || !r || !n){
+        alert("Isi semua data!");
         return;
     }
 
-    let msg=`Halo admin,
-Pengeluaran diminta
+    const msg = `Halo admin,
+Permintaan withdraw
 
 ID: ${currentUser.id}
 Nama: ${currentUser.nama}
 
 Jumlah: RM ${formatRM(j)}
 Bank: ${b}
-No Akaun: ${r}
-Nama Akaun: ${n}`;
+Akaun: ${r}
+Nama: ${n}`;
 
     window.open(`https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`);
 }
