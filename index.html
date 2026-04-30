@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Wallet Premium</title>
+<title>My Wallet</title>
 
 <style>
 *{
@@ -14,7 +14,7 @@
 }
 
 body{
-    background:#0b1220;
+    background:#0f172a;
     color:white;
 }
 
@@ -23,12 +23,11 @@ body{
     width:80px;
     display:block;
     margin:0 auto 10px;
-    filter: drop-shadow(0 0 10px rgba(168,85,247,0.6));
+    object-fit:contain;
 }
 
 .logo-small{
     width:28px;
-    vertical-align:middle;
     margin-right:8px;
 }
 
@@ -70,7 +69,7 @@ body{
     padding:14px;
     border:none;
     border-radius:10px;
-    background:#7c3aed;
+    background:linear-gradient(135deg,#3b82f6,#60a5fa);
     color:white;
     font-weight:bold;
     cursor:pointer;
@@ -87,12 +86,12 @@ body{
     align-items:center;
 }
 
-/* BALANCE */
+/* SALDO */
 .balance-card{
     margin:15px;
     padding:20px;
     border-radius:20px;
-    background:linear-gradient(135deg,#7c3aed,#a855f7);
+    background:linear-gradient(135deg,#3b82f6,#60a5fa);
 }
 
 .balance{
@@ -166,9 +165,9 @@ body{
 <div id="login">
     <div class="login-box">
         <img src="logo.png" class="logo">
-        <h2>Log Masuk</h2>
+        <h2>Masuk</h2>
         <input type="text" id="idInput" placeholder="ID">
-        <input type="password" id="passInput" placeholder="Kata Laluan">
+        <input type="password" id="passInput" placeholder="Kata Sandi">
         <button onclick="login()">Masuk</button>
     </div>
 </div>
@@ -178,34 +177,34 @@ body{
 
 <div class="header">
     <img src="logo.png" class="logo-small">
-    My Wallet Premium
+    My Wallet
 </div>
 
 <div class="balance-card">
-    <div>Baki Akaun</div>
-    <div class="balance">RM <span id="saldo">0</span></div>
+    <div>Saldo</div>
+    <div class="balance">Rp <span id="saldo">0</span></div>
     <div class="user" id="userInfo"></div>
 </div>
 
 <div class="menu">
     <button class="topup" onclick="showTopup()">Top Up</button>
-    <button class="withdraw" onclick="showWithdraw()">Withdraw</button>
+    <button class="withdraw" onclick="showWithdraw()">Tarik Dana</button>
 </div>
 
 <!-- TOPUP -->
 <div class="box" id="topupBox">
-    <p><b>Top Up ke Admin</b></p>
+    <p><b>Transfer ke Admin</b></p>
     <p>Bank: BRI</p>
-    <p>Acc: 1234567890</p>
+    <p>No Rek: 1234567890</p>
     <p>Nama: ADMIN STORE</p>
 
-    <p style="margin-top:10px;">Jumlah: RM <span id="nominal">0</span></p>
+    <p style="margin-top:10px;">Jumlah: Rp <span id="nominal">0</span></p>
 
     <input type="number" id="jumlah" placeholder="Masukkan jumlah">
 
     <div class="wa">
         <a id="waTopup" target="_blank">
-            <button>WhatsApp Admin</button>
+            <button>Hubungi Admin (WhatsApp)</button>
         </a>
     </div>
 </div>
@@ -214,11 +213,11 @@ body{
 <div class="box" id="withdrawBox">
     <input type="number" id="wdJumlah" placeholder="Jumlah">
     <input type="text" id="wdBank" placeholder="Nama Bank">
-    <input type="text" id="wdRek" placeholder="No Akaun">
-    <input type="text" id="wdNama" placeholder="Nama Akaun">
+    <input type="text" id="wdRek" placeholder="No Rekening">
+    <input type="text" id="wdNama" placeholder="Nama Pemilik">
 
     <div class="wa">
-        <button onclick="submitWithdraw()">Hantar Permintaan</button>
+        <button onclick="submitWithdraw()">Kirim Permintaan</button>
     </div>
 </div>
 
@@ -273,14 +272,14 @@ function login(){
     updateSaldo();
 }
 
-/* FORMAT */
-function formatRM(x){
-    return Number(x || 0).toLocaleString("ms-MY");
+/* FORMAT RUPIAH */
+function formatRupiah(x){
+    return Number(x || 0).toLocaleString("id-ID");
 }
 
 /* SALDO */
 function updateSaldo(){
-    saldoEl.innerText = formatRM(currentUser.saldo);
+    saldoEl.innerText = formatRupiah(currentUser.saldo);
 }
 
 /* TOPUP */
@@ -290,10 +289,10 @@ function showTopup(){
 }
 
 jumlah.addEventListener("input", function(){
-    nominal.innerText = formatRM(jumlah.value);
+    nominal.innerText = formatRupiah(jumlah.value);
 
     const msg = `Halo admin,
-Saya ingin top up RM ${formatRM(jumlah.value)}
+Saya ingin top up Rp ${formatRupiah(jumlah.value)}
 
 ID: ${currentUser.id}
 Nama: ${currentUser.nama}`;
@@ -319,14 +318,14 @@ function submitWithdraw(){
     }
 
     const msg = `Halo admin,
-Permintaan withdraw
+Permintaan tarik dana
 
 ID: ${currentUser.id}
 Nama: ${currentUser.nama}
 
-Jumlah: RM ${formatRM(j)}
+Jumlah: Rp ${formatRupiah(j)}
 Bank: ${b}
-Akaun: ${r}
+Rekening: ${r}
 Nama: ${n}`;
 
     window.open(`https://wa.me/${noAdmin}?text=${encodeURIComponent(msg)}`);
