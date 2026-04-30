@@ -3,14 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Wallet</title>
+<title>My Wallet Premium</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif;}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,sans-serif;
+}
 
 body{
     background:#0b1220;
     color:white;
+}
+
+/* LOGO */
+.logo{
+    width:80px;
+    display:block;
+    margin:0 auto 10px;
+    filter: drop-shadow(0 0 10px rgba(168,85,247,0.6));
+}
+
+.logo-small{
+    width:28px;
+    vertical-align:middle;
+    margin-right:8px;
 }
 
 /* LOGIN */
@@ -29,10 +48,11 @@ body{
     padding:25px;
     border-radius:20px;
     box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    text-align:center;
 }
 
 .login-box h2{
-    margin-bottom:15px;
+    margin-bottom:10px;
 }
 
 .login-box input{
@@ -50,7 +70,7 @@ body{
     padding:14px;
     border:none;
     border-radius:10px;
-    background:#3b82f6;
+    background:#7c3aed;
     color:white;
     font-weight:bold;
     cursor:pointer;
@@ -63,13 +83,16 @@ body{
     padding:20px;
     font-size:20px;
     font-weight:bold;
+    display:flex;
+    align-items:center;
 }
 
+/* BALANCE */
 .balance-card{
     margin:15px;
     padding:20px;
     border-radius:20px;
-    background:linear-gradient(135deg,#2563eb,#06b6d4);
+    background:linear-gradient(135deg,#7c3aed,#a855f7);
 }
 
 .balance{
@@ -101,7 +124,7 @@ body{
     cursor:pointer;
 }
 
-.topup{background:#10b981;}
+.topup{background:#22c55e;}
 .withdraw{background:#ef4444;}
 
 /* BOX */
@@ -142,6 +165,7 @@ body{
 <!-- LOGIN -->
 <div id="login">
     <div class="login-box">
+        <img src="logo.png" class="logo">
         <h2>Log Masuk</h2>
         <input type="text" id="idInput" placeholder="ID">
         <input type="password" id="passInput" placeholder="Kata Laluan">
@@ -152,7 +176,10 @@ body{
 <!-- DASHBOARD -->
 <div id="dashboard">
 
-<div class="header">My Wallet Premium</div>
+<div class="header">
+    <img src="logo.png" class="logo-small">
+    My Wallet Premium
+</div>
 
 <div class="balance-card">
     <div>Baki Akaun</div>
